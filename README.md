@@ -56,3 +56,23 @@ bytes、packages、errs、drop
 模拟特别吃资源的环境  
 stress -c n   跑满几个cpu，每个进程都反复不停的计算随机数平方根  
 
+## QT
+就当作了一个插件工具用的，因为要显示数据    
+初始化qtapplication，管理GUI程序的控制和设置，要线程分离（detach），不能阻塞，不然老是报错，再用exec显示（内部其实就是个循环）  
+QWidget：实现窗口类，构造窗口，调用app展示。先搞局部组合，再把局部组合成整体  
+QTableView：表格控制器，和QstandardItermModel配用，形成表格加数据  
+Qlabel：文本赋值  
+Qgridlayout：进行布局  
+Qstackedlayout：一次展示一个界面  
+QpushButton：按钮（解决界面如何切换）  
+QObject：用内部信号机制，编译的时候记得在CMake中添加AUTOMOC，不然编不了  
+QAbstractTableModel：实现这个类的相关借口，用来做数据模型，具体是调用线程更新模型数据（先清空再添加），再将数据类型转换为QT的类型（枚举一个个实现的），在存储到二维数组中，执行endreset，就更新了数据  
+
+## GRPC
+用来进行远程通信的，远程方法像本地方法一样调用
+基于http2协议设计，是对tcp进行封装，不过优化了粘包的问题，通过protobuf传输  
+**客户端**创建接连到远程服务器channel，构建使用该channel的Stub，通过Stub调用服务方法，执行RPC  
+channel用于执行RPC请求的端点连接，基于负载和配置  
+使用**constexpr**：将经过预处理的程序转化为特定的汇编代码，这样可以减少代码的消耗
+
+
