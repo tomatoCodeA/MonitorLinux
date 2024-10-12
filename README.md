@@ -69,10 +69,51 @@ QObject：用内部信号机制，编译的时候记得在CMake中添加AUTOMOC�
 QAbstractTableModel：实现这个类的相关借口，用来做数据模型，具体是调用线程更新模型数据（先清空再添加），再将数据类型转换为QT的类型（枚举一个个实现的），在存储到二维数组中，执行endreset，就更新了数据  
 
 ## GRPC
-用来进行远程通信的，远程方法像本地方法一样调用
+用来进行远程通信的，远程方法像本地方法一样调用  
 基于http2协议设计，是对tcp进行封装，不过优化了粘包的问题，通过protobuf传输  
 **客户端**创建接连到远程服务器channel，构建使用该channel的Stub，通过Stub调用服务方法，执行RPC  
 channel用于执行RPC请求的端点连接，基于负载和配置  
-使用**constexpr**：将经过预处理的程序转化为特定的汇编代码，这样可以减少代码的消耗
+使用**constexpr**：将经过预处理的程序转化为特定的汇编代码，这样可以减少代码的消耗  
 
+## Protobuf  
+实现不同机器上的数据交互，序列化协议属于tcp/ip协议的应用层  
+**底层原理：**  
+1.IDL文件：约定通信的数据结构  
+2.IDL compile：编译器，编译IDL文件，生成相应库和代码  
+3.stub/skeleton lib：负责序列化和反序列化的代码，其中stub放在客户端，接受应用层参数，序列化后通过底层协议发送到服务端，skeleton相反  
+4.client/server：应用层代码，IDL生成的类、对象这些  
+5.底层协议栈和互联网：转换成数字信号发送  
+**编码：**  
+1.字段编号：每个字段的编号  
+2.传输类型：每个字段都有对应的字段传输类型（可变长编码、32位、64位），其中可变长编码就是尽量用最小的字节去序列化一个整数  
+3.field：一个字段的完整二进制描述 <<编号，传输类型>值>  
+4.tag：由wire-type（后三位）和field组成  
+负数有zigzag优化  
+**可变长编码：**  
+最高位是个标志位，为1表示后面还有其他字节，为0表示没有。每个字节的低7位用来存数值，采用的是小端序，高字节放在高地址  
+**反射**
+用于动态获取数据，获取了元数据（描述信息），放在.proto文件中  
+可以通过元数据构建proto定义的一些描述，动态创建出proto对象，把数据赋值给对象  
+接口有三种：**Field Descriptor、File Descriptor、Messgae Factory**  
+Field Descriptor：proto文件中消息内的字段或扩展名的描述符  
+File Descriptor：proto文件，包括了定义的所有内容  
+Message Factory：创建消息对象  
 
+## Docker
+应用容器引擎，本质就是进程  
+构建dockfile文件搭建环境（From、Run、Copy、Workdir）、dock build生成镜像、dock run启动容器、dock exec进入容器  
+镜像文件就是把所需的环境和依赖打包  
+ENV DEBIAN-FRONTED = nointeractive表示无交互，往下执行就行  
+dirname：打印绝对路径  
+Idconfig：更新共享库缓存  
+xhost：为了qt显示
+-t：镜像文件  
+-f：目录文件  
+-v：本机代码挂载到容器中  
+-d：后台运行  
+-f：目录文件  
+-it：交互运行  
+
+### 虚拟机和容器的区别
+虚拟机：有硬件软件信息，有操作系统、内核  
+容器：利用namespace进行资源隔离，利用cgroup对权限和cpu资源限制，容器之间互不影响，不影响宿主机  
