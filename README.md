@@ -106,7 +106,7 @@ Message Factory：创建消息对象
 ENV DEBIAN-FRONTED = nointeractive表示无交互，往下执行就行  
 dirname：打印绝对路径  
 Idconfig：更新共享库缓存  
-xhost：为了qt显示
+xhost：为了qt显示，灵活的访问控制，允许在不同的网络和用户环境中配置显示权限。  
 -t：镜像文件  
 -f：目录文件  
 -v：本机代码挂载到容器中  
