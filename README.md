@@ -17,12 +17,12 @@ Linux的运行信息都存储在一个伪文件系统  /proc 中
 提供了CPU和任务的统计信息，存储在 /proc/stat/中  
 user：用户态cpu时间  
 nice：优先级用户态cpu时间  
-system：内核态cpu时间
-idle：空闲时间cpu时间
-irq：硬中断cpu时间
-softirq：软中断cpu时间
-steal：被其他虚拟机占用cpu时间
-iowait：等待io的cpu时间
+system：内核态cpu时间  
+idle：空闲时间cpu时间  
+irq：硬中断cpu时间  
+softirq：软中断cpu时间  
+steal：被其他虚拟机占用cpu时间  
+iowait：等待io的cpu时间  
 
 ## 中断
 异步事件的处理机制，提高系统的并发能力  
